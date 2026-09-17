@@ -113,19 +113,21 @@ npm run dev      # api + web, watch mode
   a populated app from `npm run dev` alone. Set `INGEST_ON_BOOT=false` to stop it.
 - API env is parsed with Zod at startup; a missing or malformed var is a hard crash, not a default.
 
-| Command               | Does                                                |
-| --------------------- | --------------------------------------------------- |
-| `npm run dev`         | Run api + web in watch mode                         |
-| `npm run ingest`      | Download and upsert the dataset (`-- --limit=50`)   |
-| `npm run check`       | **The gate.** Everything below, in order            |
-| `npm run typecheck`   | `tsc --noEmit` per workspace                        |
-| `npm run lint`        | `eslint --max-warnings=0`                           |
-| `npm run format`      | Prettier write (`format:check` to verify)           |
-| `npm test`            | `vitest run`                                        |
-| `npm run db:generate` | drizzle-kit generate — new migration from schema.ts |
-| `npm run db:check`    | drizzle-kit check — migrations match schema         |
-| `npm run db:studio`   | drizzle-kit studio — browse the local SQLite file   |
-| `npm run build`       | Web production build                                |
+| Command                  | Does                                                |
+| ------------------------ | --------------------------------------------------- |
+| `npm run dev`            | Run api + web in watch mode                         |
+| `npm run ingest`         | Download and upsert the dataset (`-- --limit=50`)   |
+| `npm run check`          | **The gate.** Everything below, in order            |
+| `npm run typecheck`      | `tsc --noEmit` per workspace                        |
+| `npm run lint`           | `eslint --max-warnings=0`                           |
+| `npm run format`         | Prettier write (`format:check` to verify)           |
+| `npm test`               | `vitest run`                                        |
+| `npm run db:generate`    | drizzle-kit generate — new migration from schema.ts |
+| `npm run db:check`       | drizzle-kit check — migrations match schema         |
+| `npm run db:studio`      | drizzle-kit studio — browse the local SQLite file   |
+| `npm run build`          | Web production build                                |
+| `npm run mcp:sqlite`     | Read-only SQLite MCP server (see `tools/mcp`)       |
+| `npm run mcp:playwright` | Playwright MCP server                               |
 
 `npm run lint:fix` and `npm run format` fix in place. A husky `pre-commit` hook runs
 lint-staged (eslint `--fix` + prettier) on staged files; it is not a substitute for
@@ -171,6 +173,26 @@ Errors: fail loudly at the boundary. Parse at the edge with Zod; never guess a d
 - Generated migration SQL is committed alongside the schema change that produced it, in the same commit.
 - Never edit an already-applied migration. Add a new one.
 - Branch per change; CI runs `npm run check` on every push and PR.
+
+## MCP servers
+
+Two, configured at the repo level — `.mcp.json` (Claude Code), `.vscode/mcp.json`
+(VS Code), `.cursor/mcp.json` (Cursor), `.zed/settings.json` (Zed),
+`.gemini/settings.json` (Gemini CLI). `npm install` is the whole setup; Playwright
+also wants `npx @playwright/mcp install-browser chrome-for-testing` once.
+
+| Server       | Tools                                       | Use it to                                                   |
+| ------------ | ------------------------------------------- | ----------------------------------------------------------- |
+| `sqlite`     | `list_tables`, `describe_table`, `query`    | Read the real data instead of guessing what ingest produced |
+| `playwright` | Navigate, click, snapshot, read the console | Drive the running app at `npm run dev` and see it work      |
+
+`sqlite` is `tools/mcp/sqlite-server.mjs`, written here because every SQLite MCP
+server on npm needs `sqlite3` or `better-sqlite3` — native addons, banned by
+Rule 2. It is read-only: the handle is opened `readOnly: true` and `query` takes
+a single `SELECT`. Schema changes still go through `schema.ts` and drizzle-kit.
+
+Details, and the snippet to paste into a client with no project-level config
+(Windsurf, Codex CLI, Claude Desktop, JetBrains): `tools/mcp/README.md`.
 
 ## Skills
 
