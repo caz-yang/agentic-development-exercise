@@ -9,7 +9,7 @@ import { decodeEmbedding } from './embeddings';
  * Everything here is arithmetic on `Float32Array`s except `loadEmbeddings`,
  * which is the only function that touches the database. That split is what
  * lets the maths be tested without a server — and it keeps the vectors in this
- * process, which design constraint 2 of exercise 3 requires.
+ * process, which the extension's "Fast, and server-side" criterion requires.
  */
 
 /** One movie's plot vector, already decoded out of its BLOB. */
