@@ -52,7 +52,8 @@ export const movies = sqliteTable('movies', {
 
   /* 1536 little-endian float32s from OpenAI's ada-002, stored raw: 6 KiB a row
      against roughly 20 KiB as JSON text, and it decodes without parsing.
-     Null for the 28 rows the dataset ships without one. Exercise 3 uses it;
+     Null for the 27 films that ship without one (28 dataset rows, before duplicates
+     collapse). The extension exercise uses it;
      it is never sent to the browser.
 
      `mode: 'buffer'` is load-bearing. Drizzle's default blob mode is JSON, so
@@ -65,9 +66,9 @@ export const movies = sqliteTable('movies', {
 });
 
 /**
- * Someone who can sign in and keep favourites. Exercise 2 fills these two
- * tables; they are declared here, with the migration already generated, so that
- * the exercise is about accounts rather than about drizzle-kit.
+ * Someone who can sign in and keep favourites. Accounts fill `users`; exercise 1
+ * fills `favourites`. Both are declared here, with the migration already
+ * generated, so that the exercise is about favourites rather than about drizzle-kit.
  *
  * THIS IS A TEACHING APP. There is no email verification, no password reset and
  * no session expiry. Do not copy this into anything real.
@@ -96,7 +97,7 @@ export const users = sqliteTable('users', {
  * in the handler — which is what makes a double-clicked heart harmless.
  *
  * Sessions are deliberately *not* here. Who is currently signed in is a fact
- * about a running process, not about the catalogue, so exercise 2 keeps it in
+ * about a running process, not about the catalogue, so the API keeps it in
  * memory and everyone is signed out when the API restarts.
  */
 export const favourites = sqliteTable(

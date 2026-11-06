@@ -10,40 +10,40 @@ edit this file, never those.
 
 **Movie Suggester** — a small app over the
 [`MongoDB/embedded_movies`](https://huggingface.co/datasets/MongoDB/embedded_movies)
-Hugging Face dataset: 1500 films with plots, cast, ratings, and a 1536-number
-`plot_embedding` per film.
+Hugging Face dataset: 1455 films with plots, cast, ratings, and, on most of them, a
+1536-number `plot_embedding`.
 
-It is also a **teaching repo**, and the branches are the syllabus. `main` ships only the
-foundation — the schema, the dataset ingest, a health/stats API and a landing page — and
-ships it deliberately bare: no ESLint, no tests, no `npm run check`, no agent docs. The
-tooling arrives one exercise at a time, each branch built on the one above it:
+It is also a **teaching repo**, and the branches are the syllabus. `main` ships the app — a
+movie list with search, filter and sort, a page per film, and accounts — plus the gate and
+these agent docs. The `.claude/` tooling arrives on `exercise-2-setup`:
 
-| Branch                | Adds                                                                          | Start here for |
-| --------------------- | ----------------------------------------------------------------------------- | -------------- |
-| `main`                | The app, bare — no lint, no tests, no gate, no agent docs                     | Exercise 1     |
-| `exercise-1-solution` | A worked answer to exercise 1                                                 | —              |
-| `exercise-2-setup`    | The gate — ESLint, Vitest, husky, CI, `npm run check` — plus these agent docs | Exercise 2     |
-| `exercise-2-solution` | A worked answer to exercise 2                                                 | —              |
-| `exercise-3-setup`    | `.claude/` — skills, subagents, hooks and settings                            | Exercise 3     |
-| `exercise-3-solution` | A worked answer to exercise 3                                                 | —              |
+| Branch                        | Adds                                                                     | Start here for     |
+| ----------------------------- | ------------------------------------------------------------------------ | ------------------ |
+| `main`                        | The app, the gate and the written house rules                            | Exercise 1         |
+| `exercise-1-solution`         | A worked answer to exercise 1                                            | —                  |
+| `exercise-2-setup`            | `.claude/` — skills, subagents, hooks and settings — and two MCP servers | Exercise 2         |
+| `extension-exercise`          | `exercise-2-setup` plus the solution to favourites                       | Extension exercise |
+| `extension-exercise-solution` | A worked answer to the extension exercise                                | —                  |
 
-**Check what the branch you are on actually has before citing it.** On `main` there is no
-`npm run check` to run and no `.claude/skills/` to read; on `exercise-2-setup` the skills are
-still absent.
+Each branch is built on the one above it, except `exercise-1-solution` and
+`exercise-2-setup`, which both sit on `main`.
 
-Three exercises build the rest of the app:
+**Check what the branch you are on actually has before citing it.** On `main` and
+`exercise-1-solution` there is no `.claude/` to read.
 
-| Exercise                                                   | Builds                                        |
-| ---------------------------------------------------------- | --------------------------------------------- |
-| [1](README.md#exercise-1--browse-the-movies)               | Paginated movie list + detail page            |
-| [2](README.md#exercise-2--favourites)                      | Favourites, on top of the accounts main ships |
-| [3](README.md#exercise-3--suggestions-from-the-embeddings) | Suggestions from the plot embeddings          |
+Two exercises and an extension build the rest of the app:
 
-After those, the stretch goals in [README.md](README.md#the-stretch-goals) are a long list of
+| Exercise                                               | Builds                                              |
+| ------------------------------------------------------ | --------------------------------------------------- |
+| [1](README.md#exercise-1--favourites)                  | Favourites, on top of the accounts main ships       |
+| [2](README.md#exercise-2--favourites-again)            | Favourites again, driving the agent with `.claude/` |
+| [Extension](README.md#extension-exercise--suggestions) | Suggestions from the plot embeddings                |
+
+After those, the stretch goals in [README.md](README.md#stretch-goals) are a long list of
 small, self-contained extras. No example solutions — nobody has built them.
 
-If you are an agent asked to "do exercise N", build it on a branch off that exercise's setup
-branch; do not copy the solution branch.
+If you are an agent asked to do an exercise, build it on a branch off the branch the README
+says to start on; do not copy the solution branch.
 
 ## Project overview
 
@@ -174,4 +174,4 @@ Errors: fail loudly at the boundary. Parse at the edge with Zod; never guess a d
 
 There are none on this branch. The `.claude/skills/` library — the house procedures for
 adding a feature, changing the schema, running the gate and reviewing your own diff —
-arrives on `exercise-3-setup`. Until then this file is the whole of the house rules.
+arrives on `exercise-2-setup`. Until then this file is the whole of the house rules.

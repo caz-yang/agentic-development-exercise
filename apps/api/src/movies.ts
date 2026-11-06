@@ -49,7 +49,7 @@ const summaryColumns = {
  *
  * Reads take it because some facts about a film — whether *you* have favourited
  * it — are facts about the pair, not about the film. Nothing on `main` uses it
- * yet; exercise 2 is what gives it meaning.
+ * yet; exercise 1 is what gives it meaning.
  */
 export type Viewer = number | undefined;
 
@@ -198,7 +198,7 @@ export function countMovies(db: Db): number {
   return firstCount(db.select({ value: count() }).from(movies).all());
 }
 
-/** How much of the table exercise 3 can actually use: 28 dataset rows ship without a vector. */
+/** How much of the table the extension can use: 27 films have no vector once duplicates collapse. */
 export function countMoviesWithEmbedding(db: Db): number {
   return firstCount(
     db.select({ value: count() }).from(movies).where(isNotNull(movies.plotEmbedding)).all(),

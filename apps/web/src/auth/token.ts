@@ -8,7 +8,6 @@
  *
  * THIS IS A TEACHING APP. A token in `localStorage` is readable by any script
  * on the page, so a real one would prefer an httpOnly cookie and a CSRF story.
- * See exercise 2 in README.md.
  */
 
 const storageKey = 'movie-suggester.token';

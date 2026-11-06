@@ -83,7 +83,7 @@ function CatalogueStats({ stats }: { stats: ApiOutputs['stats'] }) {
       <StatCard
         label="With plot embeddings"
         value={stats.moviesWithEmbedding}
-        hint="Films carrying a 1536-dimension plot vector, used in exercise 3."
+        hint="Films carrying a 1536-dimension plot vector, used in the extension exercise."
       />
     </SimpleGrid>
   );
@@ -143,7 +143,7 @@ export function HomePage() {
               from here, each with an example solution on its own branch.
             </Text>
             <Text size="sm">
-              Open <Code>README.md</Code> to start: exercise 1 is the movie list and detail pages.
+              Open <Code>README.md</Code> to start: exercise 1 is favourites.
             </Text>
           </Stack>
         </Card>

@@ -65,7 +65,7 @@ export const contract = {
   ),
 
   /**
-   * Accounts. These are already built, so that Exercise 2 is about favourites
+   * Accounts. These are already built, so that exercise 1 is about favourites
    * rather than about re-deriving a sign-up form. None of them can return a
    * password hash: every output is built from `userSchema`, which omits it.
    */

@@ -50,12 +50,9 @@ instead of trusting a cast.
 
 ## What is declared before it is used
 
-This file first appears on `exercise-2-setup`, so check the branch before believing a claim
-about what is wired up. On `main`, `movieSchema` is exported and unused by design — exercise 1
-is what consumes it, in the movie list and detail routes.
-
-The `users` and `favourites` tables are declared, migrated and exported up front for the same
-reason. On `exercise-2-setup` nothing reads `favourites` yet: exercise 2 is about accounts, not
-about drizzle-kit, so the schema work is already done for the learner. From
-`exercise-2-solution` on, it is wired up. Sessions are deliberately absent, and belong in
+Check the branch before believing a claim about what is wired up. The `favourites` table is
+declared, migrated and exported up front: exercise 1 is about favourites, not about
+drizzle-kit, so the schema work is already done for the learner. On `main` and
+`exercise-2-setup` nothing reads `favourites` yet; from `exercise-1-solution` and
+`extension-exercise` on, it is wired up. Sessions are deliberately absent, and belong in
 memory in the API process.

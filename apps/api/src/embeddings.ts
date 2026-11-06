@@ -2,7 +2,7 @@
  * The plot embedding is 1536 float32 numbers. Stored as raw little-endian
  * bytes it costs 6 KiB a row instead of roughly 20 KiB as JSON text, and it
  * comes back out of SQLite without any parsing at all — which matters when
- * exercise 3 loads every vector in the table to compare them.
+ * the extension exercise loads every vector in the table to compare them.
  *
  * Little-endian is not a choice we make here: `Float32Array` uses the host's
  * byte order, and every platform this repo runs on (x64, arm64) is
