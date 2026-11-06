@@ -39,8 +39,16 @@ fills in shortly after.
   cast, genres, ratings, posters, and a 1536-float `plot_embedding` for all but 27 of them.
 - **Three workspaces**: `packages/contract` (the source of truth), `apps/api` (Express + oRPC +
   Drizzle over `node:sqlite`), `apps/web` (Vite + React 19 + Mantine + TanStack Query).
-- **A working vertical slice** — SQLite → API → React — plus accounts and an empty
-  `favourites` table. The landing page counting the ingest is the whole UI so far.
+- **Somewhere to browse them** — a paginated list with search by title, filter by genre and sort
+  by rating, all in the URL, and a page per film. SQLite → API → React, end to end.
+- **Accounts** — sign-up, sign-in, sign-out and a header. Sessions live in the API process rather
+  than the database, so **restarting the API signs everyone out**. That is deliberate: who is
+  signed in is a fact about a running process, and a teaching app may lose it.
+- **An empty `favourites` table**, migration committed. Nothing reads or writes it yet.
+- **The gate.** `npm run check` — types, lint, format, tests, `db:check`, build — is the single
+  definition of done. A pre-commit hook lints what you stage, and CI runs the gate on every push.
+- **The house rules in writing** — `AGENTS.md` and the per-workspace `CLAUDE.md` files, for you
+  and the agent both.
 - **No infrastructure.** No Docker, no database server, no API keys.
 
 ## Your branch
@@ -51,21 +59,20 @@ Your trainer will tell you which branch to start on.
 git checkout <branch>
 ```
 
-| Branch                | Start here for | Adds                                          |
-| --------------------- | -------------- | --------------------------------------------- |
-| `main`                | Exercise 1     | The app. No linting, no tests, no agent rules |
-| `exercise-1-solution` | —              | A worked answer to exercise 1                 |
-| `exercise-2-setup`    | Exercise 2     | `npm run check` and the written house rules   |
-| `exercise-2-solution` | —              | A worked answer to exercise 2                 |
-| `exercise-3-setup`    | Exercise 3     | The skills, subagents and hooks in `.claude/` |
-| `exercise-3-solution` | —              | A worked answer to exercise 3                 |
+| Branch                        | Start here for     | Adds                                                                 |
+| ----------------------------- | ------------------ | -------------------------------------------------------------------- |
+| `main`                        | Exercise 1         | The app, the gate and the written house rules                        |
+| `exercise-1-solution`         | —                  | A worked answer to exercise 1                                        |
+| `exercise-2-setup`            | Exercise 2         | The skills, subagents and hooks in `.claude/`, and two MCP servers   |
+| `extension-exercise`          | Extension exercise | `exercise-2-setup` plus the example favourites — exercise 2's answer |
+| `extension-exercise-solution` | —                  | A worked answer to the extension exercise                            |
 
-The branches stack, and they share one `package-lock.json` — so `npm install` after a checkout
-is harmless, and installs the git hook the gate branches add. A fresh clone is already on
-`main`, so exercise 1 needs no checkout.
+Each branch is built on the one above it, except `exercise-1-solution`, which sits on `main`. A
+fresh clone is already on `main`, so exercise 1 needs no checkout. Run `npm install` after every
+checkout: `exercise-2-setup` adds packages `main` does not have.
 
 Read a solution branch after you have built your own, not instead of it. To carry your own work
-up the stack, see **Advanced** below.
+into the extension, see **Advanced** below.
 
 <details>
 <summary>Moving between branches</summary>
@@ -81,11 +88,12 @@ Commit or stash before switching, or git refuses:
 ```sh
 git stash                       # always works
 git checkout exercise-2-setup
-npm install                     # harmless, and installs the git hook
+npm install                     # picks up the packages this branch adds
+git switch -c my-exercise-2
 ```
 
-Committing works too, but from `exercise-2-setup` on the pre-commit hook lints what you
-staged — so `git commit -am "wip"` can be refused by the very errors you were parking.
+Committing works too, but the pre-commit hook lints what you staged — so
+`git commit -am "wip"` can be refused by the very errors you were parking.
 `git stash` or `--no-verify` never is.
 
 Back to the start, or to see what is on offer:
@@ -101,60 +109,19 @@ To push your own work, fork the repo on GitHub first and push to your fork.
 
 ## The exercises
 
-Each one levels up **how** you use the agent, not just what you build — same tool, three ways
-of working, and that, not the app, is the point. Every exercise ends with the way of working it
-is asking for.
+Each one levels up **how** you use the agent, not just what you build — and that, not the app,
+is the point. Exercises 1 and 2 build the same feature twice, so the only thing that changes
+between them is the way of working; the extension is open-ended. Every exercise ends with the
+way of working it is asking for.
 
-### Exercise 1 — Browse the movies
+### Exercise 1 — Favourites
 
 Start on `main` · answer on `exercise-1-solution`
 
-1455 films are in SQLite and nobody can look at one. Build a list people can browse and a page
-per film.
-
-- **A paginated list** — served a page at a time rather than the whole table, and refusing a
-  daft page size, with enough in the response for a pager to draw itself.
-- **A page per film**: plot, cast, crew, awards, and an honest 404 when the id is unknown.
-- **Search by title, filter by genre, sort by rating** — and all of it in the URL, so page 7 of
-  "Comedy by rating" is a link someone else can open.
-- **Loading, error and empty states** that each render something deliberate.
-- `plot_embedding` is exercise 3's, and never leaves the server.
-
-`main` has no linter, no test runner and no instructions for the agent. That is deliberate:
-this one is you and the agent with no guardrails, and your judgement is the only check.
-
-**Done when** you can search "alien", sort by rating, land on page 2, click a film and read
-about it.
-
-<details>
-<summary><b>Working with the agent</b> — ask, plan, review</summary>
-
-With nothing checking the agent's work but you, you are still the one typing most of the code.
-
-- **Ask before you build.** "How does the contract turn into a React hook?" Use it to
-  understand the codebase, not to skip it.
-- **Plan first**, and push back on the plan. A bad plan is cheap to fix; bad code is not.
-- **Take small snippets**, not whole features. Paste, read, understand, keep.
-- **Ask why.** If it cannot justify a line, do not keep the line.
-
-</details>
-
-### Exercise 2 — Favourites
-
-Start on `exercise-2-setup` · answer on `exercise-2-solution`
-
-This branch adds the gate. `npm run check` — types, lint, format, tests, `db:check`, build — is
-now the single definition of done, and `AGENTS.md` plus the per-workspace `CLAUDE.md` files are
-the house rules in writing, for you and the agent both. **A route is not done without a test
-that calls it through the client.**
-
-**Accounts already work** — sign-up, sign-in, sign-out and a header; start by reading
-`apps/api/src/accounts.ts`. Sessions live in the API process rather than the database, so
-**restarting the API signs everyone out**. That is deliberate: who is signed in is a fact about
-a running process, and a teaching app may lose it.
-
-**The `favourites` table already exists** — empty, migration committed. Wiring it up is the
-exercise; you should not need `npm run db:generate` at all.
+Accounts work and the `favourites` table exists; nothing connects them. Wiring it up is the
+exercise — you should not need `npm run db:generate` at all. Start by reading
+`apps/api/src/accounts.ts`. **A route is not done without a test that calls it through the
+client.**
 
 - **Favourite and unfavourite a film.** Favouriting one that does not exist is a 404, doing it
   signed out is a 401, and a double-clicked heart is not an error.
@@ -169,24 +136,69 @@ exercise; you should not need `npm run db:generate` at all.
 theirs, sign back in and find all three — as long as you have not restarted the API.
 
 <details>
-<summary><b>Working with the agent</b> — close the loop</summary>
+<summary><b>Working with the agent</b> — plan, test, close the loop</summary>
 
-The gate exists now, so let the agent run it and review outcomes instead of characters.
+The gate exists, so let the agent run it and review outcomes instead of characters.
 
-- **Let it run `npm run check`** and iterate until green without you relaying error messages.
+- **Ask before you build.** "How does the contract turn into a React hook?" Use it to
+  understand the codebase, not to skip it.
+- **Plan first**, and push back on the plan. A bad plan is cheap to fix; bad code is not.
 - **Ask for the test first**, then the code that passes it.
+- **Let it run `npm run check`** and iterate until green without you relaying error messages.
 - **Read the diff, not every line.** Look for what tests cannot catch: a duplicated type, a
   swallowed error, a hand-written `fetch`.
+- **Ask why.** If it cannot justify a line, do not keep the line.
 
 </details>
 
-### Exercise 3 — Suggestions
+### Exercise 2 — Favourites, again
 
-Start on `exercise-3-setup` · answer on `exercise-3-solution`
+Start on `exercise-2-setup` · answer on `extension-exercise`
 
-This branch, and only this branch, adds `.claude/` — the skills, subagents and hooks listed in
-**The skills** at the end. Use them; this is the exercise where you drive the agent rather than
+This branch adds `.claude/` — the skills, subagents and hooks listed in **The skills** at the
+end — and two MCP servers. Use them; this is the exercise where you drive the agent rather than
 type.
+
+Build [exercise 1](#exercise-1--favourites) again: same brief, same **done when**. Start a fresh
+branch off `exercise-2-setup` rather than carrying your exercise 1 across — the point is the
+comparison.
+
+**Done when** exercise 1's done-when holds, `npm run check` is green, and you can say what the
+tooling changed: what you typed, what you caught yourself, what a reviewer or a hook caught for
+you. Put the two side by side:
+
+```sh
+git diff main my-exercise-1 --stat
+git diff exercise-2-setup my-exercise-2 --stat
+```
+
+<details>
+<summary><b>Working with the agent</b> — drive it</summary>
+
+You know the feature now, so the work is directing the agent, not writing the code.
+
+- **Use the skills** — by name, or let the agent pick. `add-feature` is the procedure for this
+  whole exercise.
+- **`grill-me` on your plan** before anything is built.
+- **Hand it whole slices** — "favouriting, contract to UI" — and judge the result against the
+  brief.
+- **Run `implementor-reviewer`**, and let the reviewers argue with the implementor instead of
+  you.
+- **Let it see what it built.** The `sqlite` MCP server reads the real `favourites` rows;
+  `playwright` clicks the heart (it needs
+  `npx @playwright/mcp install-browser chrome-for-testing` once).
+- **Try the gate-on-stop hook.** Uncomment the `Stop` block in `.claude/settings.json` and the
+  agent cannot end a turn on a red gate. It runs the whole gate every turn, so it is slow.
+- **Write a prompt you would reuse.**
+
+</details>
+
+### Extension exercise — Suggestions
+
+Start on `extension-exercise` · answer on `extension-exercise-solution`
+
+This branch is `exercise-2-setup` plus the example favourites, so the tooling is all still
+there. To build on your own favourites instead, see **Advanced** below.
 
 Every film carries a `plot_embedding` — a vector standing in for what its plot is about, so
 films with similar plots have similar vectors. What to do with that is the exercise.
@@ -207,44 +219,36 @@ tests would convince you the numbers are right rather than merely plausible.
 suggestion that names the favourite it came from.
 
 <details>
-<summary><b>Working with the agent</b> — drive it</summary>
+<summary><b>Working with the agent</b> — design with it</summary>
 
 The problem is open-ended, so the work is mostly deciding what to build.
 
 - **Brainstorm the design.** What makes a _good_ suggestion? How do you know it worked?
-- **Use the skills** — by name, or let the agent pick — and write a prompt you would reuse.
-- **Hand it whole slices** and judge the result against the brief.
 - **Let it disagree with you**, and take the argument seriously.
 
 </details>
 
 <details>
-<summary><b>Advanced</b> — carry your own solution forward</summary>
+<summary><b>Advanced</b> — carry your own favourites into the extension</summary>
 
-`exercise-2-setup` contains the _example_ answer to exercise 1, so checking it out replaces
-your work with somebody else's. To keep your own and still get the tooling, cherry-pick the
-setup commits onto your own branch instead:
-
-```sh
-git checkout my-exercise-1
-git cherry-pick exercise-1-solution..exercise-2-setup^
-npm install
-```
-
-The `^` drops the last commit — tests written against the example solution, not yours. For
-exercise 3 nothing needs dropping:
+`extension-exercise` contains the _example_ favourites, so checking it out replaces your work
+with somebody else's. Your `my-exercise-2` is already `exercise-2-setup` plus your own
+favourites — just keep going there:
 
 ```sh
 git checkout my-exercise-2
-git cherry-pick exercise-2-solution..exercise-3-setup
 ```
 
-`npm run check` is now the definition of done and is seeing your exercise 1 for the first
-time — expect lint complaints, and no tests on your own routes. Clearing that is the first half
-of exercise 2.
+To build on your exercise 1 instead, merge the tooling into it:
 
-Hand the whole job to Claude — cherry-pick, conflicts and failures. It is exactly the kind of
-work it is good at.
+```sh
+git checkout my-exercise-1
+git merge exercise-2-setup
+npm install
+```
+
+Hand the whole job to Claude — the merge, any conflicts and whatever the gate says afterwards.
+It is exactly the kind of work it is good at.
 
 </details>
 
@@ -312,13 +316,13 @@ Thirty-odd small extras. No answer branches; you are on your own, which is the p
 | `npm run check`     | The gate: types, lint, format, tests, `db:check`, build |
 | `npm run ingest`    | Re-download the dataset (`-- --limit=50` for a slice)   |
 
-`npm run check` is exercise 2's: it arrives with `exercise-2-setup`, along with `lint`, `test`
-and the pre-commit hook. `main` has no gate. From that branch on, `AGENTS.md` and the
-per-workspace `CLAUDE.md` files carry the detail for agents.
+Every branch has the gate, along with `lint`, `test` and the pre-commit hook. `AGENTS.md` and
+the per-workspace `CLAUDE.md` files carry the detail for agents. `exercise-2-setup` adds
+`mcp:sqlite` and `mcp:playwright`.
 
 ## The skills
 
-Exercise 3's, and nowhere else: `.claude/` arrives with `exercise-3-setup`. Invoke a skill by
+Exercise 2's and the extension's: `.claude/` arrives with `exercise-2-setup`. Invoke a skill by
 name, or let the agent pick.
 
 | Skill                  | For                                                             |
@@ -341,4 +345,6 @@ name, or let the agent pick.
 
 Beside them, `.claude/agents/` holds an implementor and two reviewers, and `.claude/hooks/`
 blocks infrastructure, logs permission prompts, and — if you opt in — refuses to end a turn
-until the gate is green.
+until the gate is green. `.mcp.json` adds two MCP servers: `sqlite`, read-only queries on the
+real data, and `playwright`, which drives the running app. `tools/mcp/README.md` has the setup
+for other editors.
