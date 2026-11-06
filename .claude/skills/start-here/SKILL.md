@@ -1,6 +1,6 @@
 ---
 name: start-here
-description: Orient a new learner in this repo — what the app is, how to run it, and what the three exercises are. Use on first contact with the repo, or when unsure what to build, which branch holds an answer, or what "done" means.
+description: Orient a new learner in this repo — what the app is, how to run it, and what the exercises are. Use on first contact with the repo, or when unsure what to build, which branch holds an answer, or what "done" means.
 ---
 
 **Movie Suggester.** A movie browser built from the Hugging Face dataset
@@ -44,16 +44,16 @@ write, point at a file or ask a question, and get this repo explained in those t
 
 ## The exercises
 
-| #   | Build                                                         | Start on           | Answer on             |
-| --- | ------------------------------------------------------------- | ------------------ | --------------------- |
-| 1   | Paginated, searchable movie list + detail page                | `main`             | `exercise-1-solution` |
-| 2   | Sign-up/sign-in, favourites, favourites page and filter       | `exercise-2-setup` | `exercise-2-solution` |
-| 3   | Embedding similarity: "more like this" + personal suggestions | `exercise-3-setup` | `exercise-3-solution` |
+| #         | Build                                                         | Start on             | Answer on                     |
+| --------- | ------------------------------------------------------------- | -------------------- | ----------------------------- |
+| 1         | Favourites: a heart on every film, a favourites page, filter  | `main`               | `exercise-1-solution`         |
+| 2         | Favourites again, driving the agent with `.claude/`           | `exercise-2-setup`   | `extension-exercise`          |
+| Extension | Embedding similarity: "more like this" + personal suggestions | `extension-exercise` | `extension-exercise-solution` |
 
-The branches are a stack, each built on the one above. `main` is bare — no lint, no
-tests, no gate, no agent docs. `exercise-2-setup` adds the gate and `AGENTS.md`;
-`exercise-3-setup` adds this skills library. So check what the branch you are on
-actually has before citing it.
+`main` has the app, the gate and `AGENTS.md`. `exercise-1-solution` and
+`exercise-2-setup` both sit on `main`; `exercise-2-setup` adds this skills library, and
+the extension branches build on it. So check what the branch you are on actually has
+before citing it.
 
 Briefs live in [README.md](../../../README.md#the-exercises). Each is solvable without reading
 its branch. Read the brief, not the solution, first.

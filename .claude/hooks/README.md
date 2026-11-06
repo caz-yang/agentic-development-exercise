@@ -22,8 +22,8 @@ It also runs typecheck, lint, prettier, vitest, drizzle-kit and the web build on
 **every** turn, including ones that only read files or answer a question. That is
 tens of seconds each time.
 
-Enable it by uncommenting the `Stop` block in `.claude/settings.json`. Leave it
-off for interactive work and run `npm run check` yourself.
+Enable it by moving the `Stop` block from `_disabledHooks` into `hooks` in
+`.claude/settings.json`. Leave it off for interactive work and run `npm run check` yourself.
 
 It guards against loops with the `GATE_ON_STOP` sentinel: the hook exits
 immediately if the variable is already set, so the `npm run check` it spawns

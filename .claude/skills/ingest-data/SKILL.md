@@ -87,8 +87,8 @@ Two traps:
 
 **The embedding never crosses the wire.** `movieSchema` is
 `createSelectSchema(movies, ...).omit({ plotEmbedding: true })`, so no API
-response ever carries 6 KiB of floats to the browser. Exercise 3 computes
-similarity server-side and sends scores.
+response ever carries 6 KiB of floats to the browser. The extension exercise
+computes similarity server-side and sends scores.
 
 ## Testing ingest
 
